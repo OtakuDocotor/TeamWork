@@ -14,9 +14,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\VS Proj\\Интерфес\\Интерфес.csproj",
-      "projectName": "Интерфес",
-      "projectPath": "E:\\VS Proj\\Интерфес\\Интерфес.csproj",
+      "projectUniqueName": "E:\\VS Proj\\Интерфес\\Интерфейсы и классы.csproj",
+      "projectName": "Интерфейсы и классы",
+      "projectPath": "E:\\VS Proj\\Интерфес\\Интерфейсы и классы.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
       "outputPath": "E:\\VS Proj\\Интерфес\\obj\\",
       "projectStyle": "PackageReference",
