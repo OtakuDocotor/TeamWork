@@ -19,6 +19,8 @@ namespace тест_регялрки_для_заказа
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             string pattern2 = @"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+\s[0-9]+.[0-9]+\b";
+            string pattern3 = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+"; // паттерн для имён файлов не проверял (´｡• ω •｡`) G
+            // Проверил ( ´ ω ` )
             string[] Arrr;
             double average = 0;
             double sum = 0;
@@ -34,6 +36,13 @@ namespace тест_регялрки_для_заказа
                     Console.WriteLine(a);
                 }
                 average = sum / Work.Count;
+                Find(Arrr, pattern3);
+                Console.WriteLine("Найденные файлы:");
+                foreach(string a in Work)
+                {
+                    Console.WriteLine(a);
+                }
+
             }
             Console.WriteLine();
             Console.WriteLine("Среднее значение температуры:");
