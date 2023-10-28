@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Граф_интерфейс"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="900">
     <Grid>
+        <Menu FontSize="18" FontFamily="Verdana" Padding="20" >
+            <MenuItem Header="LoadingFiles" Click="LoadingFiles"/>
+            <MenuItem Header="ViewingFiles" Click="ViewingFiles"/>
+            <MenuItem Header="CuttingData" Click="CuttingData"/>
+            <MenuItem Header="Drawing" Click="Drawing"/>
+            <MenuItem Header="Exit" Click="Exit"/>
+        </Menu>
+
+        <TextBox Name ="MainTextBox" Margin="10,58,10,10"  FontSize="15" FontFamily="Verdana"></TextBox>
         
+        <Frame Name ="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
