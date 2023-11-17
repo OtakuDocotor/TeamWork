@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Abfli+G7rN+eWPv+X2+q9T8Wa734nnizmiha6j+z/4e48MfFnHqR/351vcH/5jdhBM5jH40RswcaeWR/0gAicw==",
+  "dgSpecHash": "TwAXBvjX1RUN2ADabe3ib/+w++lcIxyDHnVMZChCSlRVC5HJrkor/kwJhzGlTdAtFHjONSOKY36/bUWc0OkHHw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Илья\\source\\repos\\Project5Sem\\Интерфес\\Интерфейсы и классы.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Илья\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\Илья\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\Илья\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
-  ],
+  "projectFilePath": "E:\\VS Proj\\Интерфес\\Интерфейсы и классы.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

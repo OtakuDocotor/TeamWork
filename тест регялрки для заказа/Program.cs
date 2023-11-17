@@ -26,9 +26,9 @@ namespace тест_регялрки_для_заказа
             double average = 0;
             double sum = 0;
             Console.WriteLine("Найденные данные:");
-            using (BinaryReader sr = new BinaryReader(File.Open("input.dat", FileMode.Open)))
+            using (BinaryReader sr = new BinaryReader(File.Open("4.60 m_TR_013721.dat", FileMode.Open)))
             {
-                while (sr.PeekChar()>0)
+                while (sr.PeekChar()>-1)
                 {
                     s = sr.ReadString();
                     LS.Add(s);
