@@ -8,23 +8,23 @@
     "net5.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {},
-    "D:\\Смэрть\\остальное\\NuGetPackages": {}
+    "C:\\Users\\Илья\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\VS Proj\\Интерфес\\Интерфейсы и классы.csproj",
+      "projectUniqueName": "C:\\Users\\Илья\\source\\repos\\Project5Sem\\Интерфес\\Интерфейсы и классы.csproj",
       "projectName": "Интерфейсы и классы",
-      "projectPath": "E:\\VS Proj\\Интерфес\\Интерфейсы и классы.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "E:\\VS Proj\\Интерфес\\obj\\",
+      "projectPath": "C:\\Users\\Илья\\source\\repos\\Project5Sem\\Интерфес\\Интерфейсы и классы.csproj",
+      "packagesPath": "C:\\Users\\Илья\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Илья\\source\\repos\\Project5Sem\\Интерфес\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\Смэрть\\остальное\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Илья\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -56,16 +56,31 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[5.0.0, 5.0.0]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[5.0.0, 5.0.0]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[5.0.0, 5.0.0]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.415\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
       }
     }
   }
