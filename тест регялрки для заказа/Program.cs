@@ -20,31 +20,30 @@ namespace тест_регялрки_для_заказа
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             string pattern2 = @"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+\s[0-9]+.[0-9]+\b";
             string pattern3 = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+"; // паттерн для имён файлов не проверял (´｡• ω •｡`) G
-            // Проверил ( ´ ω ` )
             string[] Arrr;
+            List<string> LS = new List<string>();
+            string s;
             double average = 0;
             double sum = 0;
             Console.WriteLine("Найденные данные:");
-            using (StreamReader sr = new StreamReader("input.txt"))
+            using (BinaryReader sr = new BinaryReader(File.Open("input.dat", FileMode.Open)))
             {
-                Arrr = sr.ReadToEnd().Split(new char[] {'\r','\n'}, StringSplitOptions.RemoveEmptyEntries);
-                Find(Arrr, pattern2);
-                foreach(string a in Work)
+                while (sr.PeekChar()>0)
                 {
-                    string [] b=a.Split(new char[] { ' ' });
+                    s = sr.ReadString();
+                    LS.Add(s);
+                }
+                Arrr = LS.ToArray();
+                Find(Arrr, pattern2);
+                foreach (string a in Work)
+                {
+                    string[] b = a.Split(new char[] { ' ' });
                     sum += double.Parse(b[2]);
                     Console.WriteLine(a);
                 }
                 average = sum / Work.Count;
-                Find(Arrr, pattern3);
-                Console.WriteLine("Найденные файлы:");
-                foreach(string a in Work)
-                {
-                    Console.WriteLine(a);
-                }
-
             }
-            Console.WriteLine();
+            //Console.WriteLine();
             Console.WriteLine("Среднее значение температуры:");
             Console.WriteLine(average);
             Console.ReadKey();
