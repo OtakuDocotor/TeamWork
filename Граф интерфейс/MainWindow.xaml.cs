@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Интерфейсы_и_классы;
+using TempLib_V2;
 
 namespace Граф_интерфейс
 {

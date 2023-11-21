@@ -48,12 +48,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TempLib V2">
+      <HintPath>..\TempLib V2\bin\Debug\TempLib V2.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Интерфейсы и классы">
-      <HintPath>..\Интерфес\bin\Debug\net5.0\Интерфейсы и классы.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
