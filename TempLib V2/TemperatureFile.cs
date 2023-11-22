@@ -42,5 +42,10 @@ namespace TempLib_V2
                 AverageTemperature = sum / cnt;
             }
         }
+
+        public override string ToString()
+        {
+            return String.Format(MainFile.Name);
+        }
     }
 }

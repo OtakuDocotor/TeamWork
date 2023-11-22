@@ -29,7 +29,8 @@ namespace Граф_интерфейс
     {
         TemperatureFile[] ArrayOf_CSV_Files;
         FileInfo[] ArrayOfAllFiles;
-        string patternOf_CSV_File = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+";
+        string patternOf_CSV_File = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+.dat",
+            Fbd_SelectPath;
 
         public static TemperatureFile[] Find(FileInfo[] AllFiles, string pattern)
         {
@@ -39,10 +40,10 @@ namespace Граф_интерфейс
             Regex r = new Regex(pattern);
             foreach (FileInfo q in AllFiles)
             {
-                Matches = r.Matches(q.FullName);
+                Matches = r.Matches(q.Name);
                 foreach (Match m in Matches)
                 {
-                   // findingFiles.Add();
+                   findingFiles.Add(new TemperatureFile(q));
                 }
             }
 
@@ -59,6 +60,7 @@ namespace Граф_интерфейс
             FolderBrowserDialog FBD = new FolderBrowserDialog();
             if (FBD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Fbd_SelectPath = FBD.SelectedPath;
                 DirectoryInfo directory = new DirectoryInfo(FBD.SelectedPath);
                 ArrayOfAllFiles = directory.GetFiles();
             }
@@ -77,7 +79,19 @@ namespace Граф_интерфейс
 
         private void CuttingData(object sender, RoutedEventArgs e)
         {
+            DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
+            if (CuttedDir.Exists)
+            {
+                FileInfo[] files = CuttedDir.GetFiles();
+                foreach(var file in files)
+                {
+                    file.Delete();
+                }
+            }
+            else
+                CuttedDir.Create();
 
+            
         }
 
         private void Drawing(object sender, RoutedEventArgs e)
