@@ -27,12 +27,15 @@ namespace Граф_интерфейс
 
     public partial class MainWindow : Window
     {
-        TemperatureFile[] ArrayOf_CSV_Files;
+        TemperatureFile[] ArrayOf_CSV_Files_TR;
+        TemperatureAndDephFile[] ArrayOf_CSV_Files_TDR;
+
         FileInfo[] ArrayOfAllFiles;
-        string patternOf_CSV_File = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+.xls",
+        string patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",
+               patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+.csv",
             Fbd_SelectPath;
 
-        public static TemperatureFile[] Find(FileInfo[] AllFiles, string pattern)
+        public static TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
         {
             List<TemperatureFile> findingFiles = new List<TemperatureFile>();
             int i = 0;
@@ -50,6 +53,25 @@ namespace Граф_интерфейс
             return findingFiles.ToArray();
         }
 
+        public static TemperatureAndDephFile[] FindTDR(FileInfo[] AllFiles, string pattern)
+        {
+            List<TemperatureAndDephFile> findingFiles = new List<TemperatureAndDephFile>();
+            int i = 0;
+            MatchCollection Matches = null;
+            Regex r = new Regex(pattern);
+            foreach (FileInfo q in AllFiles)
+            {
+                Matches = r.Matches(q.Name);
+                foreach (Match m in Matches)
+                {
+                    findingFiles.Add(new TemperatureAndDephFile(q));
+                }
+            }
+
+            return findingFiles.ToArray();
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -65,13 +87,22 @@ namespace Граф_интерфейс
                 ArrayOfAllFiles = directory.GetFiles();
             }
 
-            ArrayOf_CSV_Files = Find(ArrayOfAllFiles, patternOf_CSV_File);
+            ArrayOf_CSV_Files_TR = FindTR(ArrayOfAllFiles, patternOf_CSV_File_TR);
+            ArrayOf_CSV_Files_TDR = FindTDR(ArrayOfAllFiles, patternOf_CSV_File_TDR);
+
 
         }
         private void ViewingFiles(object sender, RoutedEventArgs e)
         {
             MainTextBox.Text = "";
-            foreach (var file in ArrayOf_CSV_Files)
+            MainTextBox.Text += "TR_Files: \n";
+            foreach (var file in ArrayOf_CSV_Files_TR)
+            {
+                MainTextBox.Text += file + "\n";
+            }
+
+            MainTextBox.Text += "\nTDR_Files: \n";
+            foreach (var file in ArrayOf_CSV_Files_TDR)
             {
                 MainTextBox.Text += file + "\n";
             }
