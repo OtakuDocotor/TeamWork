@@ -15,6 +15,7 @@ namespace TempLib_V2
         public double AverageTemperature;
         public double DepthOfImmersion;
         public TRMesure[] ArrayOFMesureTR;
+
         public TemperatureFile(FileInfo mainFile)
         {
             MainFile = mainFile;
@@ -23,30 +24,6 @@ namespace TempLib_V2
             DepthOfImmersion = Double.Parse(MainFile.Name.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0]);
         }
         public TemperatureFile() { }
-        //public void CountAverageTemperature()
-        //{
-        //    string pattern = @"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+\s[0-9]+.[0-9]+\b";
-        //    List<string> MatchesList = new List<string>();
-        //    using (StreamReader sr = new StreamReader(MainFile.FullName))
-        //    {
-        //        MatchesList.Clear();
-        //        MatchCollection Matches = null;
-        //        Regex regex = new Regex(pattern);
-        //        double sum = 0;
-        //        int cnt = 0;
-        //        foreach (string SubString in sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
-        //        {
-        //            Matches = regex.Matches(SubString);
-        //            foreach (Match match in Matches)
-        //            {
-        //                MatchesList.Add(match.Value);
-        //                sum += double.Parse(match.Value.Split(new char[] { ' ' })[2]); // попытался максимально сократить если чё приму новые идеи(не факт что работает (* ^ ω ^) )
-        //                cnt += 1;
-        //            }
-        //        }
-        //        AverageTemperature = sum / cnt;
-        //    }
-        //}
         public void CountAverage()
         {
             double sum = 0;
@@ -59,6 +36,28 @@ namespace TempLib_V2
                 AverageTemperature = sum / ArrayOFMesureTR.Length;
             }
         }
+        public TRMesure[] Cutting_TR_Files()
+        {
+            List<TRMesure> Cutted_Mesures = new List<TRMesure>();
+            List<TRMesure> All_Mesures = new List<TRMesure>();
+            using (StreamReader sr =new StreamReader(MainFile.FullName))
+            {
+                string [] S= sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                MatchCollection Matches = null;
+                Regex r = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+\b");
+                foreach (string q in S)
+                {
+                    Matches = r.Matches(q);
+                    foreach (Match m in Matches)
+                    {
+                        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/',':','.' }, StringSplitOptions.RemoveEmptyEntries);
+                        All_Mesures.Add(new TRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])),double.Parse(SubS[7])));
+                    }
+                }
+            }
+            return Cutted_Mesures.ToArray();
+        }
+
 
         public override string ToString()
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
+using TempLib_V2;
 
 namespace тест_регялрки_для_заказа
 {
@@ -15,37 +16,45 @@ namespace тест_регялрки_для_заказа
         public static List<string> Work = new List<string>();
         static void Main(string[] args)
         {
-            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
-            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
-            string pattern2 = @"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+\s[0-9]+.[0-9]+\b";
+            //System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            //customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            //System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+            string pattern2 = @"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+\b";
             string pattern3 = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+"; // паттерн для имён файлов не проверял (´｡• ω •｡`) G
             string[] Arrr;
             List<string> LS = new List<string>();
-            string s;
+            string [] s;
             double average = 0;
             double sum = 0;
+            List<TRMesure> All_Mesures = new List<TRMesure>();
             Console.WriteLine("Найденные данные:");
-            using (BinaryReader sr = new BinaryReader(File.Open("4.60 m_TR_013721.dat", FileMode.Open)))
+            //using (StreamReader sr =new StreamReader("0.60 m_TR_077222_20230419_1447.csv"))
+            //{
+            //    s = sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            //    Console.WriteLine(s.Length);
+            //    Find(s, pattern2);
+            //}
+            using (StreamReader sr = new StreamReader("0.60 m_TR_077222_20230419_1447.csv"))
             {
-                while (sr.PeekChar()>-1)
+   
+                string[] S = sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                MatchCollection Matches = null;
+                Regex r = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+\b");
+                foreach (string q in S)
                 {
-                    s = sr.ReadString();
-                    LS.Add(s);
+                    Matches = r.Matches(q);
+                    foreach (Match m in Matches)
+                    {
+                        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        All_Mesures.Add(new TRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7])));
+                    }
                 }
-                Arrr = LS.ToArray();
-                Find(Arrr, pattern2);
-                foreach (string a in Work)
-                {
-                    string[] b = a.Split(new char[] { ' ' });
-                    sum += double.Parse(b[2]);
-                    Console.WriteLine(a);
-                }
-                average = sum / Work.Count;
+
             }
-            //Console.WriteLine();
-            Console.WriteLine("Среднее значение температуры:");
-            Console.WriteLine(average);
+            foreach (TRMesure a in All_Mesures)
+            {
+                Console.WriteLine(a);
+            }
             Console.ReadKey();
         }
         public static void Find(string[] s, string pattern)
