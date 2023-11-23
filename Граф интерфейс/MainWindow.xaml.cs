@@ -29,7 +29,7 @@ namespace Граф_интерфейс
     {
         TemperatureFile[] ArrayOf_CSV_Files;
         FileInfo[] ArrayOfAllFiles;
-        string patternOf_CSV_File = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+.dat",
+        string patternOf_CSV_File = @"[0-9].[0-9]+\sm_(TR|TDR)_[0-9]+_[0-9]+_[0-9]+.xls",
             Fbd_SelectPath;
 
         public static TemperatureFile[] Find(FileInfo[] AllFiles, string pattern)

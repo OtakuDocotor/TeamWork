@@ -10,6 +10,7 @@ namespace TempLib_V2
 {
     public class TemperatureFile
     {
+        public System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();  
         public FileInfo MainFile;
         public double AverageTemperature;
         public double DepthOfImmersion;
@@ -17,6 +18,8 @@ namespace TempLib_V2
         public TemperatureFile(FileInfo mainFile)
         {
             MainFile = mainFile;
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             DepthOfImmersion = Double.Parse(MainFile.Name.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0]);
         }
         public TemperatureFile() { }
