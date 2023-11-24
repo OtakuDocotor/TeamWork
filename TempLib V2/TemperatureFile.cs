@@ -14,12 +14,12 @@ namespace TempLib_V2
         public FileInfo MainFile;
         public double AverageTemperature;
         public double DepthOfImmersion;
-        public TRMesure[] ArrayOFMesureTR;
-        string[] HatOfFile;
+        public List<TRMesure> ArrayOFMesureTR = new List<TRMesure>();
+        public string[] HatOfFile = new string[6];
 
         public TemperatureFile(FileInfo mainFile)
         {
-            MainFile = mainFile;
+            this.MainFile = mainFile;
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             DepthOfImmersion = Double.Parse(MainFile.Name.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0]);
@@ -28,22 +28,24 @@ namespace TempLib_V2
         public void CountAverage()
         {
             double sum = 0;
-            if(ArrayOFMesureTR!=null)
+            if (ArrayOFMesureTR != null)
             {
-                foreach(TRMesure item in ArrayOFMesureTR)
+                foreach (TRMesure item in ArrayOFMesureTR)
                 {
                     sum += item._Temperature;
                 }
-                AverageTemperature = sum / ArrayOFMesureTR.Length;
+                AverageTemperature = sum / ArrayOFMesureTR.Count;
             }
         }
-        public TRMesure[] Cutting_TR_Files()
+        public void Cutting_TR_Files()
         {
             List<TRMesure> Cutted_Mesures = new List<TRMesure>();
             List<TRMesure> All_Mesures = new List<TRMesure>();
             using (StreamReader sr =new StreamReader(MainFile.FullName))
             {
-                
+                customCulture.NumberFormat.NumberDecimalSeparator = ",";
+                System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+
                 double Sum = 0;
                 string[] S = sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 for(int i=0;i<6;i++)
@@ -59,6 +61,7 @@ namespace TempLib_V2
                     {
                         string[] SubS = m.Value.Split(new char[] { ' ', ';', '/',':','.' }, StringSplitOptions.RemoveEmptyEntries);
                         All_Mesures.Add(new TRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])),double.Parse(SubS[7])));
+                        Sum += All_Mesures.Last()._Temperature;
                     }
                 }
                 double average= Sum / All_Mesures.Count;
@@ -70,10 +73,9 @@ namespace TempLib_V2
                     }
                 }
                 Cutted_Mesures.RemoveRange(0, 250);
-                int n = Cutted_Mesures.Count();
-                Cutted_Mesures.RemoveRange(n - 1200, 1200);
+                Cutted_Mesures.RemoveRange(Cutted_Mesures.Count() - 1200, 1200);
             }
-            return Cutted_Mesures.ToArray();
+            ArrayOFMesureTR = Cutted_Mesures;
         }
 
 

@@ -30,7 +30,7 @@ namespace TempLib_V2
                     sumPS += item._SeaPressure;
                     sumD += item._Pressure;
                 }
-                int n = ArrayOFMesureTR.Length;
+                int n = ArrayOFMesureTR.Count;
                 AverageTemperature = sumT / n;
                 AveragePressure = sumP / n;
                 AverageSeaPressure = sumPS / n;

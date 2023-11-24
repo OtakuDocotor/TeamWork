@@ -122,8 +122,25 @@ namespace Граф_интерфейс
             else
                 CuttedDir.Create();
 
-            
+
+            for(int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
+            {
+                ArrayOf_CSV_Files_TR[i].Cutting_TR_Files();
+                ArrayOf_CSV_Files_TR[i].CountAverage();
+                var file = new FileInfo(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name));
+                file.Create();
+
+                //using(StreamWriter sw = new StreamWriter(file.FullName))
+                //{
+                //    for(int j = 0; j < ArrayOf_CSV_Files_TR[i].HatOfFile.Length; j++)
+                //    {
+                //        sw.WriteLine(ArrayOf_CSV_Files_TR[i].HatOfFile[j]);
+                //    }
+                //}
+            }
+
         }
+
 
         private void Drawing(object sender, RoutedEventArgs e)
         {
