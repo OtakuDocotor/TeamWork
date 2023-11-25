@@ -16,6 +16,7 @@ namespace TempLib_V2
         public double DepthOfImmersion;
         public List<TRMesure> ArrayOFMesureTR = new List<TRMesure>();
         public string[] HatOfFile = new string[6];
+        public List<string> StrMesures = new List<string>();
 
         public TemperatureFile(FileInfo mainFile)
         {
@@ -65,15 +66,18 @@ namespace TempLib_V2
                     }
                 }
                 double average= Sum / All_Mesures.Count;
-                foreach (TRMesure a in All_Mesures)
+                for(int i=0;i<All_Mesures.Count;i++)
                 {
-                    if (a._Temperature < average)
+                    if (All_Mesures[i]._Temperature < average)
                     {
-                        Cutted_Mesures.Add(a);
+                        Cutted_Mesures.Add(All_Mesures[i]);
+                        StrMesures.Add(S[i+7]);
                     }
                 }
                 Cutted_Mesures.RemoveRange(0, 250);
+                StrMesures.RemoveRange(0, 250);
                 Cutted_Mesures.RemoveRange(Cutted_Mesures.Count() - 1200, 1200);
+                StrMesures.RemoveRange(StrMesures.Count() - 1200, 1200);
             }
             ArrayOFMesureTR = Cutted_Mesures;
         }
