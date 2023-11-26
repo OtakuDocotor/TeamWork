@@ -55,6 +55,7 @@ namespace TempLib_V2
                 }
                 MatchCollection Matches = null;
                 Regex r = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+\b");
+
                 foreach (string q in S)
                 {
                     Matches = r.Matches(q);

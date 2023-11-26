@@ -141,6 +141,25 @@ namespace Граф_интерфейс
                     }
                 }
             }
+            for(int i=0;i<ArrayOf_CSV_Files_TDR.Length;i++)
+            {
+                ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files();
+                ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
+                var file = File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name));
+                string Name = file.Name;
+                file.Close();
+                using (StreamWriter sw = new StreamWriter(Name))
+                {
+                    for (int j = 0; j < ArrayOf_CSV_Files_TDR[i].HatOfFile.Length; j++)
+                    {
+                        sw.WriteLine(ArrayOf_CSV_Files_TDR[i].HatOfFile[j]);
+                    }
+                    for (int k = 0; k < ArrayOf_CSV_Files_TDR[i].StrMesures.Count(); k++)
+                    {
+                        sw.WriteLine(ArrayOf_CSV_Files_TDR[i].StrMesures[k]);
+                    }
+                }
+            }
         }
 
 
