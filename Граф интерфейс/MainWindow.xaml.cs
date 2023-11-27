@@ -141,7 +141,7 @@ namespace Граф_интерфейс
                     }
                 }
             }
-            for(int i=0;i<ArrayOf_CSV_Files_TDR.Length;i++)
+            for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
             {
                 ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files();
                 ArrayOf_CSV_Files_TDR[i].CountAverageTDR();

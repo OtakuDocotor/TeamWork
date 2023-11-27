@@ -36,6 +36,7 @@ namespace TempLib_V2
                 AveragePressure = sumP / n;
                 AverageSeaPressure = sumPS / n;
                 AverageDepth = sumD / n;
+               
             }
         }
         public void Cutting_TDR_Files()
@@ -46,32 +47,24 @@ namespace TempLib_V2
             {
                 customCulture.NumberFormat.NumberDecimalSeparator = ",";
                 System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+
                 double Sum = 0;
                 string[] S = sr.ReadToEnd().Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < 6; i++)
                 {
                     HatOfFile[i] = S[i];
                 }
-                Match Match = null;
+                MatchCollection Matches = null;
                 Regex Nr = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+");
-                //foreach (string q in S)
-                //{
-                //    Matches = Nr.Matches(q);
-                //    foreach (Match m in Matches)
-                //    {
-                //        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
-                //        All_Mesures.Add(new TDRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7]), double.Parse(SubS[8]), double.Parse(SubS[9]), double.Parse(SubS[10])));
-                //        Sum += All_Mesures.Last()._Temperature;
-                //    }
-                //}
+
                 foreach (string q in S)
                 {
-                    Match = Nr.Match(q);
-                    if (Match.Value != "")
+                    Matches = Nr.Matches(q);
+                    foreach (Match m in Matches)
                     {
-                        string[] SubS = Match.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
                         All_Mesures.Add(new TDRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7]), double.Parse(SubS[8]), double.Parse(SubS[9]), double.Parse(SubS[10])));
-                        Sum += double.Parse(SubS[7]);
+                        Sum += All_Mesures.Last()._Temperature;
                     }
                 }
                 double average = Sum / All_Mesures.Count;
