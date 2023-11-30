@@ -41,8 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="MesuresFile.cs" />
+    <Compile Include="Mesure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TDRMesure.cs" />
+    <Compile Include="TemperatureAndDephFile.cs" />
+    <Compile Include="TemperatureFile.cs" />
+    <Compile Include="TRMesure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
