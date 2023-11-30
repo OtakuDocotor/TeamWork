@@ -54,19 +54,24 @@ namespace TempLib_V2
                 {
                     HatOfFile[i] = S[i];
                 }
-                MatchCollection Matches = null;
-                Regex Nr = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+.+[0-9]+.[0-9]+[;]+");
-
+                Match Match = null;
+                Regex Nr = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+");
                 foreach (string q in S)
                 {
-                    Matches = Nr.Matches(q);
-                    foreach (Match m in Matches)
+                    Match = Nr.Match(q);
+                    if (Match.Value != "")
                     {
-                        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] SubS = q.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
                         All_Mesures.Add(new TDRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7]), double.Parse(SubS[8]), double.Parse(SubS[9]), double.Parse(SubS[10])));
                         Sum += All_Mesures.Last()._Temperature;
                     }
                 }
+                //for (int i = 0; i < S.Length-7; i++)
+                //{
+                //    string[] SubS = S[i+7].Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                //    All_Mesures.Add(new TDRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7]), double.Parse(SubS[8]), double.Parse(SubS[9]), double.Parse(SubS[10])));
+                //    Sum += All_Mesures.Last()._Temperature;
+                //}
                 double average = Sum / All_Mesures.Count;
                 for (int i = 0; i < All_Mesures.Count; i++)
                 {
