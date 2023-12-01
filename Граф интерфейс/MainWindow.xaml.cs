@@ -31,9 +31,12 @@ namespace Граф_интерфейс
         TemperatureAndDephFile[] ArrayOf_CSV_Files_TDR;
 
         FileInfo[] ArrayOfAllFiles;
+
+        bool ISLoadFolder = false;
+
         string patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",
                patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+.csv",
-            Fbd_SelectPath;
+               Fbd_SelectPath;
 
         public static TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
         {
@@ -85,87 +88,112 @@ namespace Граф_интерфейс
                 Fbd_SelectPath = FBD.SelectedPath;
                 DirectoryInfo directory = new DirectoryInfo(FBD.SelectedPath);
                 ArrayOfAllFiles = directory.GetFiles();
+
+                ArrayOf_CSV_Files_TR = FindTR(ArrayOfAllFiles, patternOf_CSV_File_TR);
+                ArrayOf_CSV_Files_TDR = FindTDR(ArrayOfAllFiles, patternOf_CSV_File_TDR);
+
+                ISLoadFolder = true;
+
+                System.Windows.MessageBox.Show(
+                    $"{ArrayOf_CSV_Files_TR.Length + ArrayOf_CSV_Files_TDR.Length} file(s) upload successfully!");
             }
 
-            ArrayOf_CSV_Files_TR = FindTR(ArrayOfAllFiles, patternOf_CSV_File_TR);
-            ArrayOf_CSV_Files_TDR = FindTDR(ArrayOfAllFiles, patternOf_CSV_File_TDR);
-
-
+            
         }
         private void ViewingFiles(object sender, RoutedEventArgs e)
         {
-            MainTextBox.Text = "";
-            MainTextBox.Text += "TR_Files: \n";
-            foreach (var file in ArrayOf_CSV_Files_TR)
+            if (ISLoadFolder)
             {
-                MainTextBox.Text += file + "\n";
-            }
+                MainTextBox.Text = "";
+                MainTextBox.Text += "TR_Files: \n";
+                foreach (var file in ArrayOf_CSV_Files_TR)
+                {
+                    MainTextBox.Text += file + "\n";
+                }
 
-            MainTextBox.Text += "\nTDR_Files: \n";
-            foreach (var file in ArrayOf_CSV_Files_TDR)
-            {
-                MainTextBox.Text += file + "\n";
+                MainTextBox.Text += "\nTDR_Files: \n";
+                foreach (var file in ArrayOf_CSV_Files_TDR)
+                {
+                    MainTextBox.Text += file + "\n";
+                }
             }
+            else
+            {
+                System.Windows.MessageBox.Show("Please, download the folder!");
+            }
+           
         }
 
         private void CuttingData(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
-            if (CuttedDir.Exists)
+            if (ISLoadFolder)
             {
-                FileInfo[] files = CuttedDir.GetFiles();
-                foreach(var file in files)
+                DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
+                if (CuttedDir.Exists)
                 {
-                    file.Delete();
+                    FileInfo[] files = CuttedDir.GetFiles();
+                    foreach (var file in files)
+                    {
+                        file.Delete();
+                    }
                 }
+                else
+                    CuttedDir.Create();
+
+                for (int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
+                {
+                    ArrayOf_CSV_Files_TR[i].Cutting_TR_Files();
+                    ArrayOf_CSV_Files_TR[i].CountAverage();
+                   
+                    using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name))))
+                    {
+                        for (int j = 0; j < ArrayOf_CSV_Files_TR[i].HatOfFile.Length; j++)
+                        {
+                            sw.WriteLine(ArrayOf_CSV_Files_TR[i].HatOfFile[j]);
+                        }
+                        for (int k = 0; k < ArrayOf_CSV_Files_TR[i].StrMesures.Count(); k++)
+                        {
+                            sw.WriteLine(ArrayOf_CSV_Files_TR[i].StrMesures[k]);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
+                {
+                    ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files();
+                    ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
+                    
+                    using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name))))
+                    {
+                        for (int j = 0; j < ArrayOf_CSV_Files_TDR[i].HatOfFile.Length; j++)
+                        {
+                            sw.WriteLine(ArrayOf_CSV_Files_TDR[i].HatOfFile[j]);
+                        }
+                        for (int k = 0; k < ArrayOf_CSV_Files_TDR[i].StrMesures.Count(); k++)
+                        {
+                            sw.WriteLine(ArrayOf_CSV_Files_TDR[i].StrMesures[k]);
+                        }
+                    }
+                }
+
+                System.Windows.MessageBox.Show("Cutting was successfully!");
             }
             else
-                CuttedDir.Create();
-
-            for(int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
             {
-                ArrayOf_CSV_Files_TR[i].Cutting_TR_Files();
-                ArrayOf_CSV_Files_TR[i].CountAverage();
-                var file = File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name));
-                string Name = file.Name;
-                file.Close();
-                using (StreamWriter sw = new StreamWriter(Name))
-                {
-                    for (int j = 0; j < ArrayOf_CSV_Files_TR[i].HatOfFile.Length; j++)
-                    {
-                        sw.WriteLine(ArrayOf_CSV_Files_TR[i].HatOfFile[j]);
-                    }
-                    for (int k = 0; k < ArrayOf_CSV_Files_TR[i].StrMesures.Count(); k++)
-                    {
-                        sw.WriteLine(ArrayOf_CSV_Files_TR[i].StrMesures[k]);
-                    }
-                }
-            }
-            for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
-            {
-                ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files();
-                ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
-                var file = File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name));
-                string Name = file.Name;
-                file.Close();
-                using (StreamWriter sw = new StreamWriter(Name))
-                {
-                    for (int j = 0; j < ArrayOf_CSV_Files_TDR[i].HatOfFile.Length; j++)
-                    {
-                        sw.WriteLine(ArrayOf_CSV_Files_TDR[i].HatOfFile[j]);
-                    }
-                    for (int k = 0; k < ArrayOf_CSV_Files_TDR[i].StrMesures.Count(); k++)
-                    {
-                        sw.WriteLine(ArrayOf_CSV_Files_TDR[i].StrMesures[k]);
-                    }
-                }
+                System.Windows.MessageBox.Show("Please, download the folder!");
             }
         }
 
-
-        private void Drawing(object sender, RoutedEventArgs e)
+        private void Calculating(object sender, RoutedEventArgs e)
         {
-
+            if (ISLoadFolder)
+            {
+                //тут должны быть рассчеты
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Please, download the folder!");
+            }
         }
 
         private void Exit(object sender, RoutedEventArgs e)
