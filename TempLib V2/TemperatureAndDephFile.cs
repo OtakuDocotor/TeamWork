@@ -66,12 +66,7 @@ namespace TempLib_V2
                         Sum += All_Mesures.Last()._Temperature;
                     }
                 }
-                //for (int i = 0; i < S.Length-7; i++)
-                //{
-                //    string[] SubS = S[i+7].Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
-                //    All_Mesures.Add(new TDRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]), int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7]), double.Parse(SubS[8]), double.Parse(SubS[9]), double.Parse(SubS[10])));
-                //    Sum += All_Mesures.Last()._Temperature;
-                //}
+
                 double average = Sum / All_Mesures.Count;
                 for (int i = 0; i < All_Mesures.Count; i++)
                 {
@@ -81,8 +76,8 @@ namespace TempLib_V2
                         StrMesures.Add(S[i + 7]);
                     }
                 }
-                Cutted_Mesures.RemoveRange(0, 250);
-                StrMesures.RemoveRange(0, 250);
+                Cutted_Mesures.RemoveRange(0, 500);
+                StrMesures.RemoveRange(0, 500);
                 Cutted_Mesures.RemoveRange(Cutted_Mesures.Count() - 1200, 1200);
                 StrMesures.RemoveRange(StrMesures.Count() - 1200, 1200);
             }

@@ -75,8 +75,8 @@ namespace TempLib_V2
                         StrMesures.Add(S[i+7]);
                     }
                 }
-                Cutted_Mesures.RemoveRange(0, 250);
-                StrMesures.RemoveRange(0, 250);
+                Cutted_Mesures.RemoveRange(0, 500);
+                StrMesures.RemoveRange(0, 500);
                 Cutted_Mesures.RemoveRange(Cutted_Mesures.Count() - 1200, 1200);
                 StrMesures.RemoveRange(StrMesures.Count() - 1200, 1200);
             }
