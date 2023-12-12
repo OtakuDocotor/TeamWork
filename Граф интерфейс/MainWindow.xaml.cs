@@ -38,6 +38,8 @@ namespace Граф_интерфейс
                patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+.csv",
                Fbd_SelectPath;
 
+        int Number_of_first_mesure, Number_of_last_mesure;
+
         public static TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
         {
             List<TemperatureFile> findingFiles = new List<TemperatureFile>();
@@ -140,9 +142,28 @@ namespace Граф_интерфейс
                 else
                     CuttedDir.Create();
 
+                
+                double deepest_sensor = 0;
+                TemperatureFile deepest_sensor_file = new TemperatureFile();
+
+                for(int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
+                {
+                    if (ArrayOf_CSV_Files_TR[i].DepthOfImmersion > deepest_sensor)
+                    {
+                        deepest_sensor = ArrayOf_CSV_Files_TR[i].DepthOfImmersion;
+                        deepest_sensor_file = ArrayOf_CSV_Files_TR[i];
+                    }
+                }
+
+
+
+                deepest_sensor_file.Cutting_TR_Files();
+                Number_of_first_mesure = deepest_sensor_file.number_of_first_mesure;
+                Number_of_last_mesure = deepest_sensor_file.number_of_last_mesure;
+
                 for (int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
                 {
-                    ArrayOf_CSV_Files_TR[i].Cutting_TR_Files();
+                    ArrayOf_CSV_Files_TR[i].Cutting_TR_Files(Number_of_first_mesure, Number_of_last_mesure);
                     ArrayOf_CSV_Files_TR[i].CountAverage();
                    
                     using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name))))
@@ -160,7 +181,7 @@ namespace Граф_интерфейс
 
                 for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
                 {
-                    ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files();
+                    ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files(Number_of_first_mesure, Number_of_last_mesure);
                     ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
                     
                     using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name))))
