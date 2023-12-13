@@ -14,10 +14,12 @@ namespace TempLib_V2
         public FileInfo MainFile;
         public double AverageTemperature;
         public double DepthOfImmersion;
-        public List<TRMesure> ArrayOFMesureTR = new List<TRMesure>();
+        public List<TRMesure> ArrayOFMesure = new List<TRMesure>();
         public string[] HatOfFile = new string[6];
         public List<string> StrMesures = new List<string>();
         public int number_of_first_mesure, number_of_last_mesure;
+
+        public List<string> errors;
 
         public TemperatureFile(FileInfo mainFile)
         {
@@ -30,13 +32,13 @@ namespace TempLib_V2
         public void CountAverage()
         {
             double sum = 0;
-            if (ArrayOFMesureTR != null)
+            if (ArrayOFMesure != null)
             {
-                foreach (TRMesure item in ArrayOFMesureTR)
+                foreach (TRMesure item in ArrayOFMesure)
                 {
                     sum += item._Temperature;
                 }
-                AverageTemperature = sum / ArrayOFMesureTR.Count;
+                AverageTemperature = sum / ArrayOFMesure.Count;
             }
         }
         public void Cutting_TR_Files()
@@ -80,24 +82,28 @@ namespace TempLib_V2
                             flag = true;
                         }
                         Cutted_Mesures.Add(All_Mesures[i]);
-                        StrMesures.Add(S[i+7]);
+                        StrMesures.Add(S[i+6]);
                     }
                 }
-                Cutted_Mesures.RemoveRange(0, 500);
-                StrMesures.RemoveRange(0, 500);
-                number_of_first_mesure += 500;
+                Cutted_Mesures.RemoveRange(0, 600);
+                StrMesures.RemoveRange(0, 600);
+                number_of_first_mesure += 600;
 
                 Cutted_Mesures.RemoveRange(Cutted_Mesures.Count() - 1200, 1200);
                 StrMesures.RemoveRange(StrMesures.Count() - 1200, 1200);
-                number_of_last_mesure = Cutted_Mesures.Count() + 500;
+                number_of_last_mesure = Cutted_Mesures.Count();
             }
-            ArrayOFMesureTR = Cutted_Mesures;
+            ArrayOFMesure = Cutted_Mesures;
         }
 
         public void Cutting_TR_Files(int first_mesure_num, int last_mesure_num)
         {
             List<TRMesure> Cutted_Mesures = new List<TRMesure>();
             List<TRMesure> All_Mesures = new List<TRMesure>();
+
+            this.number_of_first_mesure = first_mesure_num;
+            this.number_of_last_mesure = last_mesure_num;
+
             using (StreamReader sr = new StreamReader(MainFile.FullName))
             {
                 customCulture.NumberFormat.NumberDecimalSeparator = ",";
@@ -108,29 +114,35 @@ namespace TempLib_V2
                 {
                     HatOfFile[i] = S[i];
                 }
-                MatchCollection Matches = null;
-                Regex r = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+[0-9]+.[0-9]+\b");
+                Match match = null;
+                Regex r = new Regex(@"[0-9]+/[0-9]+/[0-9]+\s[0-9]+:[0-9]+:[0-9]+.[0-9]+[;]+(.[0-9]+.[0-9]+|[0-9]+.[0-9]+)");
+                 errors = new List<string>();
 
                 foreach (string q in S)
                 {
-                    Matches = r.Matches(q);
-                    foreach (Match m in Matches)
+                    match = r.Match(q);
+                    if (match.Value != "")
                     {
-                        string[] SubS = m.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] SubS = match.Value.Split(new char[] { ' ', ';', '/', ':', '.' }, StringSplitOptions.RemoveEmptyEntries);
                         All_Mesures.Add(new TRMesure(new DateTime(int.Parse(SubS[2]), int.Parse(SubS[1]), int.Parse(SubS[0]), int.Parse(SubS[3]),
                             int.Parse(SubS[4]), int.Parse(SubS[5])), double.Parse(SubS[7])));
+                    }
+                    else
+                    {
+                        errors.Add(q);
                     }
                 }
 
                 for (int i = first_mesure_num; i < last_mesure_num+1; i++)
                 {
                     Cutted_Mesures.Add(All_Mesures[i]);
-                    StrMesures.Add(S[i + 7]);
+                    StrMesures.Add(S[i + 6]);
                 }
                 
             }
-            ArrayOFMesureTR = Cutted_Mesures;
+            ArrayOFMesure = Cutted_Mesures;
         }
+
 
 
         public override string ToString()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,13 +33,15 @@ namespace Граф_интерфейс
 
         FileInfo[] ArrayOfAllFiles;
 
-        bool ISLoadFolder = false;
+        bool ISLoadFolder = false, ISCutted = false, ISCalculated = false;
 
         string patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",
                patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+.csv",
                Fbd_SelectPath;
 
         int Number_of_first_mesure, Number_of_last_mesure;
+
+        public double Heat_Content_Of_The_Full_Water_Column = 0;
 
         public static TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
         {
@@ -128,92 +131,158 @@ namespace Граф_интерфейс
 
         private void CuttingData(object sender, RoutedEventArgs e)
         {
-            if (ISLoadFolder)
+            if (!ISCutted)
             {
-                DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
-                if (CuttedDir.Exists)
+                if (ISLoadFolder && ArrayOfAllFiles.Count() > 0)
                 {
-                    FileInfo[] files = CuttedDir.GetFiles();
-                    foreach (var file in files)
+                    DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
+                    if (CuttedDir.Exists)
                     {
-                        file.Delete();
+                        FileInfo[] files = CuttedDir.GetFiles();
+                        foreach (var file in files)
+                        {
+                            file.Delete();
+                        }
                     }
+                    else
+                        CuttedDir.Create();
+
+
+                    double deepest_sensor = 0;
+                    TemperatureFile deepest_sensor_file = new TemperatureFile();
+
+                    for (int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
+                    {
+                        if (ArrayOf_CSV_Files_TR[i].DepthOfImmersion > deepest_sensor)
+                        {
+                            deepest_sensor = ArrayOf_CSV_Files_TR[i].DepthOfImmersion;
+                            deepest_sensor_file = ArrayOf_CSV_Files_TR[i];
+                        }
+                    }
+
+                    //MainTextBox.Text = "";
+
+                    deepest_sensor_file.Cutting_TR_Files();
+                    deepest_sensor_file.CountAverage();
+                    Number_of_first_mesure = deepest_sensor_file.number_of_first_mesure;
+                    Number_of_last_mesure = deepest_sensor_file.number_of_last_mesure;
+
+                    for (int i = 0; i < ArrayOf_CSV_Files_TR.Length - 1; i++)
+                    {
+                        ArrayOf_CSV_Files_TR[i].Cutting_TR_Files(Number_of_first_mesure, Number_of_last_mesure);
+                        ArrayOf_CSV_Files_TR[i].CountAverage();
+
+                        //MainTextBox.Text += ArrayOf_CSV_Files_TR[i].ArrayOFMesure[0].ToString() + '\n';
+                        //MainTextBox.Text += Number_of_first_mesure.ToString() + " " + Number_of_last_mesure.ToString() + '\n';
+
+                        using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name))))
+                        {
+                            for (int j = 0; j < ArrayOf_CSV_Files_TR[i].HatOfFile.Length; j++)
+                            {
+                                sw.WriteLine(ArrayOf_CSV_Files_TR[i].HatOfFile[j]);
+                            }
+                            for (int k = 0; k < ArrayOf_CSV_Files_TR[i].StrMesures.Count(); k++)
+                            {
+                                sw.WriteLine(ArrayOf_CSV_Files_TR[i].StrMesures[k]);
+                            }
+                        }
+                    }
+
+
+                    for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
+                    {
+                        ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files(Number_of_first_mesure, Number_of_last_mesure);
+                        ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
+
+                        using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name))))
+                        {
+                            for (int j = 0; j < ArrayOf_CSV_Files_TDR[i].HatOfFile.Length; j++)
+                            {
+                                sw.WriteLine(ArrayOf_CSV_Files_TDR[i].HatOfFile[j]);
+                            }
+                            for (int k = 0; k < ArrayOf_CSV_Files_TDR[i].StrMesures.Count(); k++)
+                            {
+                                sw.WriteLine(ArrayOf_CSV_Files_TDR[i].StrMesures[k]);
+                            }
+                        }
+                    }
+
+                    System.Windows.MessageBox.Show("Cutting was successfully!");
+                    ISCutted = true;
                 }
                 else
-                    CuttedDir.Create();
-
-                
-                double deepest_sensor = 0;
-                TemperatureFile deepest_sensor_file = new TemperatureFile();
-
-                for(int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
                 {
-                    if (ArrayOf_CSV_Files_TR[i].DepthOfImmersion > deepest_sensor)
-                    {
-                        deepest_sensor = ArrayOf_CSV_Files_TR[i].DepthOfImmersion;
-                        deepest_sensor_file = ArrayOf_CSV_Files_TR[i];
-                    }
+                    System.Windows.MessageBox.Show("Please, download the folder!");
                 }
-
-
-
-                deepest_sensor_file.Cutting_TR_Files();
-                Number_of_first_mesure = deepest_sensor_file.number_of_first_mesure;
-                Number_of_last_mesure = deepest_sensor_file.number_of_last_mesure;
-
-                for (int i = 0; i < ArrayOf_CSV_Files_TR.Length; i++)
-                {
-                    ArrayOf_CSV_Files_TR[i].Cutting_TR_Files(Number_of_first_mesure, Number_of_last_mesure);
-                    ArrayOf_CSV_Files_TR[i].CountAverage();
-                   
-                    using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TR[i].MainFile.Name))))
-                    {
-                        for (int j = 0; j < ArrayOf_CSV_Files_TR[i].HatOfFile.Length; j++)
-                        {
-                            sw.WriteLine(ArrayOf_CSV_Files_TR[i].HatOfFile[j]);
-                        }
-                        for (int k = 0; k < ArrayOf_CSV_Files_TR[i].StrMesures.Count(); k++)
-                        {
-                            sw.WriteLine(ArrayOf_CSV_Files_TR[i].StrMesures[k]);
-                        }
-                    }
-                }
-
-                for (int i = 0; i < ArrayOf_CSV_Files_TDR.Length; i++)
-                {
-                    ArrayOf_CSV_Files_TDR[i].Cutting_TDR_Files(Number_of_first_mesure, Number_of_last_mesure);
-                    ArrayOf_CSV_Files_TDR[i].CountAverageTDR();
-                    
-                    using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(CuttedDir.FullName, "Cutted_" + ArrayOf_CSV_Files_TDR[i].MainFile.Name))))
-                    {
-                        for (int j = 0; j < ArrayOf_CSV_Files_TDR[i].HatOfFile.Length; j++)
-                        {
-                            sw.WriteLine(ArrayOf_CSV_Files_TDR[i].HatOfFile[j]);
-                        }
-                        for (int k = 0; k < ArrayOf_CSV_Files_TDR[i].StrMesures.Count(); k++)
-                        {
-                            sw.WriteLine(ArrayOf_CSV_Files_TDR[i].StrMesures[k]);
-                        }
-                    }
-                }
-
-                System.Windows.MessageBox.Show("Cutting was successfully!");
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Please, download the folder!");
             }
         }
 
         private void Calculating(object sender, RoutedEventArgs e)
         {
-            if (ISLoadFolder)
+            if (!ISCalculated)
             {
-                //тут должны быть рассчеты
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Please, download the folder!");
+                if (ISLoadFolder && ArrayOfAllFiles.Count() > 0 && ISCutted)
+                {
+                    WaterLayer CurrLayer;
+                    if (ISLoadFolder && ArrayOfAllFiles.Count() > 0)
+                    {
+                        List<WaterLayer> list_of_layers = new List<WaterLayer>();
+                        for (int i = 0; i < ArrayOf_CSV_Files_TR.Count() - 1; i++)
+                        {
+                            CurrLayer = new WaterLayer(ArrayOf_CSV_Files_TR[i], ArrayOf_CSV_Files_TR[i + 1]);
+                            list_of_layers.Add(CurrLayer);
+                            CurrLayer.Calculation();
+                        }
+
+                        if (ArrayOf_CSV_Files_TDR.Count() > 0)
+                        {
+                            CurrLayer = new WaterLayer(ArrayOf_CSV_Files_TR.Last(), ArrayOf_CSV_Files_TDR.First());
+                            list_of_layers.Add(CurrLayer);
+                            CurrLayer.Calculation();
+                        }
+
+                        for (int i = 0; i < ArrayOf_CSV_Files_TDR.Count() - 1; i++)
+                        {
+                            CurrLayer = new WaterLayer(ArrayOf_CSV_Files_TDR[i], ArrayOf_CSV_Files_TDR[i + 1]);
+                            list_of_layers.Add(CurrLayer);
+                            CurrLayer.Calculation();
+                        }
+
+
+                        if (!ISCalculated)
+                            foreach (WaterLayer layer in list_of_layers)
+                            {
+                                Heat_Content_Of_The_Full_Water_Column += layer.Heat_Content_Of_The_Water_Column;
+                            }
+
+                        ISCalculated = true;
+
+                        System.Windows.MessageBox.Show("Calculating was successfully!");
+
+                        MainTextBox.Text = "";
+                        for (int i = 0; i < list_of_layers.Count; i++)
+                        {
+                            MainTextBox.Text += list_of_layers[i].file1.DepthOfImmersion + "m - " + list_of_layers[i].file2.DepthOfImmersion
+                                + "m: " + list_of_layers[i].Heat_Content_Of_The_Water_Column + '\n';
+                        }
+
+                        MainTextBox.Text += "Overall value: " + Heat_Content_Of_The_Full_Water_Column;
+
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("Please, download the folder!");
+                    }
+                }
+                else if (!ISLoadFolder || ArrayOfAllFiles.Count() == 0)
+                {
+                    System.Windows.MessageBox.Show("Please, download the folder!");
+                }
+                else if (!ISCutted)
+                {
+                    System.Windows.MessageBox.Show("Please, cut the files!");
+                }
+
             }
         }
 
