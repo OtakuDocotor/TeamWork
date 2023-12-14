@@ -35,7 +35,7 @@ namespace Граф_интерфейс
 
         bool ISLoadFolder = false, ISCutted = false, ISCalculated = false;
 
-        string /*patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",*/
+        string 
                patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+[.]csv",
                patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+[.]csv",
                Fbd_SelectPath;
@@ -44,7 +44,7 @@ namespace Граф_интерфейс
 
         public double Heat_Content_Of_The_Full_Water_Column = 0;
 
-        public static TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
+        public TemperatureFile[] FindTR(FileInfo[] AllFiles, string pattern)
         {
             List<TemperatureFile> findingFiles = new List<TemperatureFile>();
             int i = 0;
@@ -62,7 +62,7 @@ namespace Граф_интерфейс
             return findingFiles.ToArray();
         }
 
-        public static TemperatureAndDephFile[] FindTDR(FileInfo[] AllFiles, string pattern)
+        public TemperatureAndDephFile[] FindTDR(FileInfo[] AllFiles, string pattern)
         {
             List<TemperatureAndDephFile> findingFiles = new List<TemperatureAndDephFile>();
             int i = 0;
