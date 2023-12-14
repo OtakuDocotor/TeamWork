@@ -35,8 +35,9 @@ namespace Граф_интерфейс
 
         bool ISLoadFolder = false, ISCutted = false, ISCalculated = false;
 
-        string patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",
-               patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+.csv",
+        string /*patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+.csv",*/
+               patternOf_CSV_File_TR = @"[0-9].[0-9]+\sm_(TR)_[0-9]+_[0-9]+_[0-9]+[.]csv",
+               patternOf_CSV_File_TDR = @"[0-9].[0-9]+\sm_(TDR)_[0-9]+_[0-9]+_[0-9]+[.]csv",
                Fbd_SelectPath;
 
         int Number_of_first_mesure, Number_of_last_mesure;
@@ -98,6 +99,8 @@ namespace Граф_интерфейс
                 ArrayOf_CSV_Files_TDR = FindTDR(ArrayOfAllFiles, patternOf_CSV_File_TDR);
 
                 ISLoadFolder = true;
+                ISCutted = false;
+                ISCalculated = false;
 
                 System.Windows.MessageBox.Show(
                     $"{ArrayOf_CSV_Files_TR.Length + ArrayOf_CSV_Files_TDR.Length} file(s) upload successfully!");
@@ -133,7 +136,7 @@ namespace Граф_интерфейс
         {
             if (!ISCutted)
             {
-                if (ISLoadFolder && ArrayOfAllFiles.Count() > 0)
+                if (ISLoadFolder && (ArrayOf_CSV_Files_TDR.Length+ArrayOf_CSV_Files_TR.Length) > 0)
                 {
                     DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
                     if (CuttedDir.Exists)
@@ -221,7 +224,8 @@ namespace Граф_интерфейс
         {
             if (!ISCalculated)
             {
-                if (ISLoadFolder && ArrayOfAllFiles.Count() > 0 && ISCutted)
+                Heat_Content_Of_The_Full_Water_Column = 0;
+                if (ISLoadFolder && (ArrayOf_CSV_Files_TDR.Length + ArrayOf_CSV_Files_TR.Length) > 0 && ISCutted)
                 {
                     WaterLayer CurrLayer;
                     if (ISLoadFolder && ArrayOfAllFiles.Count() > 0)
