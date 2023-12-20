@@ -102,5 +102,8 @@
       <Name>TempLib V2</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="1.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

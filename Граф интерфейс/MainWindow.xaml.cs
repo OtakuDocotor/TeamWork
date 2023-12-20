@@ -30,7 +30,7 @@ namespace Граф_интерфейс
     {
         TemperatureFile[] ArrayOf_CSV_Files_TR;
         TemperatureAndDephFile[] ArrayOf_CSV_Files_TDR;
-
+        DirectoryInfo Cutted_Directory; 
         FileInfo[] ArrayOfAllFiles;
 
         bool ISLoadFolder = false, ISCutted = false, ISCalculated = false;
@@ -139,6 +139,7 @@ namespace Граф_интерфейс
                 if (ISLoadFolder && (ArrayOf_CSV_Files_TDR.Length+ArrayOf_CSV_Files_TR.Length) > 0)
                 {
                     DirectoryInfo CuttedDir = new DirectoryInfo(Fbd_SelectPath + @"\CuttedFiles");
+                    Cutted_Directory = CuttedDir;
                     if (CuttedDir.Exists)
                     {
                         FileInfo[] files = CuttedDir.GetFiles();
@@ -263,15 +264,19 @@ namespace Граф_интерфейс
 
                         System.Windows.MessageBox.Show("Calculating was successfully!");
 
-                        MainTextBox.Text = "";
-                        for (int i = 0; i < list_of_layers.Count; i++)
+                        using (StreamWriter sw = new StreamWriter(File.Create(System.IO.Path.Combine(Cutted_Directory.FullName, "Result of Calculation.txt "))))
                         {
-                            MainTextBox.Text += list_of_layers[i].file1.DepthOfImmersion + "m - " + list_of_layers[i].file2.DepthOfImmersion
-                                + "m: " + list_of_layers[i].Heat_Content_Of_The_Water_Column + '\n';
+                            MainTextBox.Text = "";
+                            for (int i = 0; i < list_of_layers.Count; i++)
+                            {
+                                sw.Write(list_of_layers[i].file1.DepthOfImmersion + "m - " + list_of_layers[i].file2.DepthOfImmersion
+                                    + "m: " + list_of_layers[i].Heat_Content_Of_The_Water_Column + '\n');
+                                MainTextBox.Text += list_of_layers[i].file1.DepthOfImmersion + "m - " + list_of_layers[i].file2.DepthOfImmersion
+                                    + "m: " + list_of_layers[i].Heat_Content_Of_The_Water_Column + '\n';
+                            }
+                            sw.Write("Overall value: " + Heat_Content_Of_The_Full_Water_Column);
+                            MainTextBox.Text += "Overall value: " + Heat_Content_Of_The_Full_Water_Column;
                         }
-
-                        MainTextBox.Text += "Overall value: " + Heat_Content_Of_The_Full_Water_Column;
-
                     }
                     else
                     {
